@@ -6,6 +6,7 @@ import { AuthorsModule } from './authors/authors.module';
 import { ConfigModule } from '@nestjs/config';
 import { CategoriesModule } from './categories/categories.module';
 import { TagsModule } from './tags/tags.module';
+import { CoursesModule } from './courses/courses.module';
 
 @Module({
   imports: [
@@ -14,6 +15,7 @@ import { TagsModule } from './tags/tags.module';
     ConfigModule.forRoot({ isGlobal: true }),
     CategoriesModule,
     TagsModule,
+    CoursesModule,
   ],
   controllers: [AppController],
   providers: [AppService],

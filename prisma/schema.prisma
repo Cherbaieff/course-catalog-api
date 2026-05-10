@@ -18,6 +18,7 @@ model Author {
   name      String
   bio       String?
   createdAt DateTime @default(now())
+  courses   Course[]
 }
 
 model Category {
@@ -25,10 +26,25 @@ model Category {
   name        String
   description String?
   createdAt   DateTime @default(now())
+  courses     Course[]
 }
 
 model Tag {
   id        Int      @id @default(autoincrement())
   name      String   @unique
   createdAt DateTime @default(now())
+  courses   Course[]
+}
+
+model Course {
+  id          Int        @id @default(autoincrement())
+  title       String
+  description String?
+  price       Float
+  level       String
+  createdAt   DateTime   @default(now())
+  categories  Category[]
+  tags        Tag[]
+  author      Author     @relation(fields: [authorId], references: [id])
+  authorId    Int
 }

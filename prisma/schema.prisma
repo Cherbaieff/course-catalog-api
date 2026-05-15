@@ -47,4 +47,16 @@ model Course {
   tags        Tag[]
   author      Author     @relation(fields: [authorId], references: [id])
   authorId    Int
+  lessons     Lesson[]
+}
+
+model Lesson {
+  id        Int      @id @default(autoincrement())
+  title     String
+  content   String
+  duration  Int
+  order     Int
+  course    Course   @relation(fields: [courseId], references: [id])
+  courseId  Int
+  createdAt DateTime @default(now())
 }

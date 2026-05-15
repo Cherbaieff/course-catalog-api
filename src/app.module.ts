@@ -7,6 +7,7 @@ import { ConfigModule } from '@nestjs/config';
 import { CategoriesModule } from './categories/categories.module';
 import { TagsModule } from './tags/tags.module';
 import { CoursesModule } from './courses/courses.module';
+import { LessonsModule } from './lessons/lessons.module';
 
 @Module({
   imports: [
@@ -16,6 +17,7 @@ import { CoursesModule } from './courses/courses.module';
     CategoriesModule,
     TagsModule,
     CoursesModule,
+    LessonsModule,
   ],
   controllers: [AppController],
   providers: [AppService],

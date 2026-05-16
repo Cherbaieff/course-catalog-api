@@ -48,6 +48,7 @@ model Course {
   author      Author     @relation(fields: [authorId], references: [id])
   authorId    Int
   lessons     Lesson[]
+  reviews     Review[]
 }
 
 model Lesson {
@@ -56,6 +57,15 @@ model Lesson {
   content   String
   duration  Int
   order     Int
+  course    Course   @relation(fields: [courseId], references: [id])
+  courseId  Int
+  createdAt DateTime @default(now())
+}
+
+model Review {
+  id        Int      @id @default(autoincrement())
+  text      String
+  rating    Int
   course    Course   @relation(fields: [courseId], references: [id])
   courseId  Int
   createdAt DateTime @default(now())

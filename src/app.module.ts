@@ -8,6 +8,7 @@ import { CategoriesModule } from './categories/categories.module';
 import { TagsModule } from './tags/tags.module';
 import { CoursesModule } from './courses/courses.module';
 import { LessonsModule } from './lessons/lessons.module';
+import { ReviewsModule } from './reviews/reviews.module';
 
 @Module({
   imports: [
@@ -18,6 +19,7 @@ import { LessonsModule } from './lessons/lessons.module';
     TagsModule,
     CoursesModule,
     LessonsModule,
+    ReviewsModule,
   ],
   controllers: [AppController],
   providers: [AppService],

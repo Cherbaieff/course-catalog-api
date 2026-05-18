@@ -1,7 +1,13 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { CreateCourseDto } from './dto/create-course.dto';
 import { UpdateCourseDto } from './dto/update-course.dto';
+import { FilterCoursesDto } from './dto/filter-courses.dto';
+import { QueryMode } from 'generated/prisma/internal/prismaNamespace';
 
 @Injectable()
 export class CoursesService {
@@ -24,14 +30,63 @@ export class CoursesService {
     return course;
   }
 
-  async findAll() {
-    return this.prismaService.course.findMany({
-      include: {
-        tags: true,
-        categories: true,
-        author: true,
-      },
-    });
+  private async filteredCourses({
+    search,
+    minPrice,
+    maxPrice,
+    sortBy,
+    sortOrder,
+    page,
+    limit,
+    level,
+    authorId,
+  }: FilterCoursesDto) {
+    if (minPrice && maxPrice && minPrice > maxPrice) {
+      throw new BadRequestException('minPrice cannot be greater than maxPrice');
+    }
+
+    const whereClause = {
+      ...(search && {
+        title: { contains: search, mode: QueryMode.insensitive },
+      }),
+      ...(level && { level }),
+      ...(authorId && { authorId }),
+      ...((minPrice || maxPrice) && {
+        price: {
+          lte: maxPrice,
+          gte: minPrice,
+        },
+      }),
+    };
+
+    const [courses, coursesRecords] = await Promise.all([
+      this.prismaService.course.findMany({
+        where: whereClause,
+        include: {
+          tags: true,
+          author: true,
+          categories: true,
+        },
+        orderBy: { [sortBy || 'createdAt']: sortOrder || 'asc' },
+        ...(page &&
+          limit && {
+            skip: (page - 1) * limit,
+            take: limit,
+          }),
+      }),
+      this.prismaService.course.count({ where: whereClause }),
+    ]);
+
+    return {
+      data: courses,
+      count: coursesRecords,
+      page: page || 1,
+      limit: limit || 10,
+    };
+  }
+
+  async findAll(query: FilterCoursesDto) {
+    return await this.filteredCourses(query);
   }
 
   async findOne(id: number) {

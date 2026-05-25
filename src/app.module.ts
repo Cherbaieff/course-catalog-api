@@ -9,6 +9,8 @@ import { TagsModule } from './tags/tags.module';
 import { CoursesModule } from './courses/courses.module';
 import { LessonsModule } from './lessons/lessons.module';
 import { ReviewsModule } from './reviews/reviews.module';
+import { ScheduleModule } from '@nestjs/schedule';
+import { TaskModule } from './task/task.module';
 
 @Module({
   imports: [
@@ -20,6 +22,8 @@ import { ReviewsModule } from './reviews/reviews.module';
     CoursesModule,
     LessonsModule,
     ReviewsModule,
+    ScheduleModule.forRoot(),
+    TaskModule,
   ],
   controllers: [AppController],
   providers: [AppService],

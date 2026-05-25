@@ -30,17 +30,19 @@ export class CoursesService {
     return course;
   }
 
-  private async filteredCourses({
-    search,
-    minPrice,
-    maxPrice,
-    sortBy,
-    sortOrder,
-    page,
-    limit,
-    level,
-    authorId,
-  }: FilterCoursesDto) {
+  private async filteredCourses(query?: Partial<FilterCoursesDto>) {
+    const {
+      search,
+      minPrice,
+      maxPrice,
+      sortBy,
+      sortOrder,
+      page,
+      limit,
+      level,
+      authorId,
+    } = query || {};
+
     if (minPrice && maxPrice && minPrice > maxPrice) {
       throw new BadRequestException('minPrice cannot be greater than maxPrice');
     }
@@ -85,7 +87,7 @@ export class CoursesService {
     };
   }
 
-  async findAll(query: FilterCoursesDto) {
+  async findAll(query?: FilterCoursesDto) {
     return await this.filteredCourses(query);
   }
 

@@ -6,7 +6,10 @@ import {
   IsNumber,
   IsOptional,
   IsString,
+  ValidateNested,
 } from 'class-validator';
+import { CreateFirstLessonDto } from './create-first-lesson.dto';
+import { Type } from 'class-transformer';
 
 export class CreateCourseDto {
   @IsNotEmpty()
@@ -39,4 +42,9 @@ export class CreateCourseDto {
   @IsNotEmpty()
   @IsInt()
   authorId!: number;
+
+  @IsOptional()
+  @ValidateNested()
+  @Type(() => CreateFirstLessonDto)
+  firstLesson!: CreateFirstLessonDto;
 }

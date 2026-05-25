@@ -94,26 +94,34 @@ export class CoursesService {
   }
 
   async create(createCourseDto: CreateCourseDto) {
-    return this.prismaService.course.create({
-      data: {
-        title: createCourseDto.title,
-        description: createCourseDto.description,
-        price: createCourseDto.price,
-        level: createCourseDto.level,
-        authorId: createCourseDto.authorId,
+    return await this.prismaService.$transaction(async (tx) => {
+      const course = await tx.course.create({
+        data: {
+          title: createCourseDto.title,
+          description: createCourseDto.description,
+          price: createCourseDto.price,
+          level: createCourseDto.level,
+          authorId: createCourseDto.authorId,
 
-        categories: {
-          connect: createCourseDto.categoryIds.map((id) => ({ id })),
+          categories: {
+            connect: createCourseDto.categoryIds.map((id) => ({ id })),
+          },
+          tags: {
+            connect: createCourseDto.tagIds.map((id) => ({ id })),
+          },
         },
-        tags: {
-          connect: createCourseDto.tagIds.map((id) => ({ id })),
+        include: {
+          categories: true,
+          tags: true,
+          author: true,
         },
-      },
-      include: {
-        categories: true,
-        tags: true,
-        author: true,
-      },
+      });
+      if (createCourseDto.firstLesson) {
+        await tx.lesson.create({
+          data: { ...createCourseDto.firstLesson, courseId: course.id },
+        });
+      }
+      return course;
     });
   }
 
